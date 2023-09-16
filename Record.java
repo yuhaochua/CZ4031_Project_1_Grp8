@@ -1,13 +1,13 @@
 public class Record {
-    private int game_date_est;
-    private int team_id_home;
-    private short pts_home;
-    private float fg_pct_home;
-    private float ft_pct_home;
-    private float fg3_pct_home;
-    private byte ast_home;
-    private byte reb_home;
-    private byte home_team_wins;
+    private int game_date_est; // 4 bytes
+    private int team_id_home; // 4 bytes
+    private short pts_home; // 1 byte
+    private float fg_pct_home; // 4 bytes
+    private float ft_pct_home; // 4 bytes
+    private float fg3_pct_home; // 4 bytes
+    private byte ast_home; // 1 byte
+    private byte reb_home; // 1 byte
+    private byte home_team_wins; // 1 byte
 
     public Record(int game_date_est, int team_id_home, short pts_home, float fg_pct_home, float ft_pct_home, float fg3_pct_home, byte ast_home, byte reb_home, byte home_team_wins) {
         this.game_date_est = game_date_est;
@@ -21,7 +21,7 @@ public class Record {
         this.home_team_wins = home_team_wins;
     }
 
-        // Getter for game_date_est
+    // Getter for game_date_est
     public int getGame_date_est() {
         return game_date_est;
     }
