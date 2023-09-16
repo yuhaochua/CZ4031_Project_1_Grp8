@@ -1,4 +1,5 @@
 public class Record {
+    public static int final RECORD_SIZE = 24;
     private int game_date_est;
     private int team_id_home;
     private short pts_home;
@@ -64,5 +65,9 @@ public class Record {
     // Getter for home_team_wins
     public byte getHome_team_wins() {
         return home_team_wins;
+    }
+
+    public String getUniqueId(){
+        return Integer.valueOf(record.getGame_date_est()).toString() + Integer.valueOf(record.getTeam_id_home()).toString();
     }
 }
