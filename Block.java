@@ -20,17 +20,18 @@ public class Block {
         }
     }
 
-    public void addRecord(Record record) {
+    public Address addRecord(Record record) {
         int pointer = availIndex.get(0);
         records[pointer] = record;
         String uniqueID = Integer.valueOf(record.getGame_date_est()).toString() + Integer.valueOf(record.getTeam_id_home()).toString();
         recordMap.put(uniqueID, pointer);
         availIndex.remove(0);
+
+        return new Address(this, pointer);
     }
 
-    public void deleteRecord() {
-        int pointer = recordMap.get("uniqueID");
-        availIndex.add(pointer);
+    public void deleteRecord(int index) {
+        availIndex.add(index);
     }
 
     public boolean isFull() {

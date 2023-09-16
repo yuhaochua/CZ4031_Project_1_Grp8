@@ -1,5 +1,5 @@
 public class Record {
-    public static int final RECORD_SIZE = 24;
+    public static final int RECORD_SIZE = 24;
     private int game_date_est; // 4 bytes
     private int team_id_home; // 4 bytes
     private short pts_home; // 1 byte
@@ -68,6 +68,6 @@ public class Record {
     }
 
     public String getUniqueId(){
-        return Integer.valueOf(record.getGame_date_est()).toString() + Integer.valueOf(record.getTeam_id_home()).toString();
+        return Integer.valueOf(game_date_est).toString() + Integer.valueOf(team_id_home).toString();
     }
 }
