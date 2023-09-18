@@ -52,4 +52,8 @@ public class Disk {
             availBlocks.add(block);
         }
     }
+
+    public int getNumBlocks() {
+        return blockSet.size();
+    }
 }

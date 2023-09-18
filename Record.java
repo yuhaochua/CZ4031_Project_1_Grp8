@@ -1,8 +1,8 @@
 public class Record {
-    public static final int RECORD_SIZE = 24;
+    public static final int RECORD_SIZE = 32;
     private int game_date_est; // 4 bytes
     private int team_id_home; // 4 bytes
-    private short pts_home; // 1 byte
+    private short pts_home; // 2 bytes
     private float fg_pct_home; // 4 bytes
     private float ft_pct_home; // 4 bytes
     private float fg3_pct_home; // 4 bytes
