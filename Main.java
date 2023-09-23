@@ -10,6 +10,15 @@ public class Main {
         String filePath = "games.txt";
 
         try {
+            // Node leafNode = new LeafNode();
+            // Node internalNode = new InternalNode();
+
+            // System.out.println("This node is a " + leafNode.getClass());
+            // System.out.println("This node is a " + internalNode.getClass());
+            // if(leafNode.getClass().toString().equals("class LeafNode")) {
+            //     System.out.println("TRUE");
+            // }
+
             Scanner scanner = new Scanner(new File(filePath));
             scanner.nextLine();
 
