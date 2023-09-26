@@ -5,9 +5,14 @@ import java.util.Arrays;
 // the children classes(LeafNode, InternalNode) will have their own implementations of pointers
 public abstract class Node {
     public static final int n = 32;
+    public static final int MIN_N = 16;
+
+    private int numKeys;
+    public Node parent;
     private float[] keys; // 4 bytes * value of n
 
     public Node() {
+        numKeys = 0;
         keys = new float[n];
         Arrays.fill(keys, Float.MAX_VALUE); // initiate keys with max value of float
     }
