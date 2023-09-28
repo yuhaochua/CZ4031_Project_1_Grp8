@@ -1,6 +1,10 @@
 public class BPlusTree {
     private Node rootNode; 
 
+    public BPlusTree() {
+        rootNode = new LeafNode();
+    }
+
     // count the number of nodes in this B+ tree
     public int countNodes() {
         // IMPLEMENTATION
@@ -19,9 +23,15 @@ public class BPlusTree {
         return rootNode;
     }
 
+    public void enumerateNodes() {
+        rootNode.enumerateNodes();
+    }
+
     // insert record into B+ tree
-    public void insertRecord() {
+    public void insertRecord(Address address) {
         // IMPLEMENTATION
+        rootNode.insertRecord(address);
+        if(rootNode.getParent() != null) rootNode = rootNode.getParent();
     }
 
     // delete record from B+ tree

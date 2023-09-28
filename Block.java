@@ -43,4 +43,8 @@ public class Block {
         if(availIndex.size() == MAX_NUM_RECORDS) return true;
         return false;
     }
+
+    public Record[] getRecords() {
+        return records;
+    }
 }

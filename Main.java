@@ -5,6 +5,7 @@ import java.util.Scanner;
 public class Main {
     private static Disk disk = new Disk();
     private static int numRecords = 0;
+    private static BPlusTree bplustree = new BPlusTree();
     public static void main(String[] arg) {
         // Define the file path
         String filePath = "games.txt";
@@ -42,7 +43,13 @@ public class Main {
                     byte home_team_wins = (byte)Integer.parseInt(values[8]);
 
                     Record newRecord = new Record(date, team_id_home, pts_home, fg_pct_home, ft_pct_home, fg3_pct_home, ast_home, reb_home, home_team_wins);
-                    disk.insertRecord(newRecord);
+                    Address address = disk.insertRecord(newRecord);
+                    // Block block = address.getBlock();
+                    // int index = address.getIndex();
+                    // float key = block.getRecords()[index].getFg_pct_home();
+                    // System.out.println("inserting into bplus tree: " + key);
+                    bplustree.insertRecord(address);
+
                     numRecords++;
                 }
                 // System.out.println("Date: " + date);
@@ -67,6 +74,8 @@ public class Main {
             System.out.println("Size of a record: " + Record.RECORD_SIZE);
             System.out.println("Number of records stored in a block: " + Block.MAX_NUM_RECORDS);
             System.out.println("Number of blocks for storing data: " + disk.getNumBlocks());
+            System.out.println("Enumerating bplus tree");
+            bplustree.enumerateNodes();
 
         } catch (FileNotFoundException | NumberFormatException e) {
             System.err.println("File not found: " + filePath);
@@ -75,6 +84,10 @@ public class Main {
             System.out.println("record number: " + numRecords);
         }
         
+
+    }
+
+    public void experiment2() {
 
     }
 
