@@ -23,55 +23,6 @@ public class InternalNode extends Node {
         // TODO use binary search on node to find spot to insert
         // TODO find a better way to insert node
         // TODO shift all childPointers if inserting a node in between
-        // if (!isFull()) {
-        //     int insertPos = 0;
-        //     while (insertPos < Node.n && this.keys[insertPos] < key) {
-        //         insertPos++;
-        //     }
-
-        //     // Shift right
-        //     for (int i = Node.n - 1; i > insertPos; i--) {
-        //         this.keys[i] = this.keys[i - 1];
-        //     }
-        //     // Shift child pointers
-        //     for (int i = Node.n; i > insertPos + 1; i--) {
-        //         this.childPointers[i] = this.childPointers[i - 1];
-        //     }
-
-        //     this.keys[insertPos] = key;
-        //     this.childPointers[insertPos + 1] = null;
-
-        // } else {
-        //     float[] newKeys = new float[n + 1];
-        //     int keysi = 0;
-        //     for (int i = 0; i < n + 1; i++) {
-        //         if (key < this.keys[keysi]) {
-        //             newKeys[i] = key;
-        //         } else {
-        //             newKeys[i] = this.keys[keysi];
-        //         }
-        //         keysi++;
-        //     }
-
-        //     Node left = new InternalNode();
-        //     Node right = new InternalNode();
-        //     for (int i = 0; i < (n + 1) / 2; i++) {
-        //         left.insertRecord(this.keys[i]);
-        //     }
-        //     for (int i = (n + 1) / 2 + 1; i < n + 1; i++) {
-        //         right.insertRecord(this.keys[i]);
-        //     }
-
-        //     if (this.parent == null) {
-        //         this.parent = new InternalNode();
-        //         this.parent.insertRecord(this.keys[(n + 1) / 2]);
-        //         Node[] parentChildPointers = parent.getChildPointers();
-        //         // TODO update parent child pointers
-        //     } else {
-        //         this.parent.insertRecord(this.keys[(n + 1) / 2]);
-        //         Node[] parentChildPointers = parent.getChildPointers();
-        //     }
-        // }
 
         int insertPos = 0;
         Block block = address.getBlock();
@@ -82,9 +33,14 @@ public class InternalNode extends Node {
             insertPos++;
         }
 
-        if(this.keys[insertPos] <= key) {
+
+
+        if(insertPos < Node.n && this.keys[insertPos] == key) {
             this.childPointers[insertPos + 1].insertRecord(address);
         } else {
+            // if(insertPos > 0) System.out.println("The previous key here is " + this.keys[insertPos - 1]);
+            // System.out.println("The key here is " + this.keys[insertPos]);
+            // System.out.println("insert pos is " + insertPos);
             this.childPointers[insertPos].insertRecord(address);
         }
     }
@@ -101,23 +57,13 @@ public class InternalNode extends Node {
 
             // NEED TO INSERT THE NEW CHILD ALSO AFTER DISTRIBUTING
             if(insertPos <= (Node.n)/2) { // will be inserted into left node
-                for(int i=Node.n/2, j=0; i<Node.n; i++, j++) {
-                    rightNode.childPointers[j] = this.childPointers[i+1];                
+                for(int i=Node.n/2, j=0; i<Node.n; i++, j++) { 
+                    rightNode.childPointers[j] = this.childPointers[i+1];   
+                    rightNode.childPointers[j].setParent(rightNode);             
                     if(i+1 < Node.n) rightNode.keys[j] = this.keys[i+1];
                     this.keys[i] = Float.MAX_VALUE;
                     this.childPointers[i+1] = null;
                 }
-                // int i = Node.n/2;
-                // int j = 0;
-                // while(i<Node.n) {
-                //     rightNode.childPointers[j] = this.childPointers[i+1];
-                //     if(i+1 < Node.n) rightNode.keys[j] = this.keys[i+1];
-                //     this.keys[i] = Float.MAX_VALUE;
-                //     this.childPointers[i+1] = null;
-
-                //     i++;
-                //     j++;
-                // }
                 
                 if(this.keys[insertPos] != Float.MAX_VALUE) {
                     for (int i = Node.n - 1; i > insertPos; i--) {
@@ -132,57 +78,38 @@ public class InternalNode extends Node {
                 
 
             } else { // will be inserted into right node
-                // if(insertPos == Node.n/2) { // if inserted child is at start of this new right node
-                //     for(int i=Node.n/2+1, j=0; i<=Node.n; i++, j++) {
-                //         if(insertPos == i) {
-                //             rightNode.childPointers[j] = childNode; // copy pointer only
-                //         } else {
-                //             rightNode.keys[j-1] = this.keys[i-1];
-                //             rightNode.childPointers[j] = this.childPointers[i];                            
-                //             this.keys[i-1] = Float.MAX_VALUE;
-                //             this.childPointers[i] = null;
-                //         }
-                //     }
-                // } else { // else if inserted child is somewhere in the middle of the new right node, need copy both pointer and key
-                //     for(int i=Node.n/2+1, j=0; i<Node.n; i++, j++) {
-                //         if(insertPos == i) {
-                //             rightNode.childPointers[j] = childNode;
-                //             rightNode.keys[j] = key;
-                //             i--;
-                //         } else {
-                //             rightNode.childPointers[j] = this.childPointers[i+1];                
-                //             if(i+1 < Node.n) rightNode.keys[j] = this.keys[i+1];
-                //             this.keys[i] = Float.MAX_VALUE;
-                //             this.childPointers[i+1] = null;
-                //         }
-                //     }
-                // }
-
-                boolean inserted = false;
+                boolean inserted = false; // check whether the new key has been inserted already
                 for(int i=Node.n/2+1, j=0; i<=Node.n; i++, j++) {
-                    System.out.println("Value of j: " + j + "Value of i: " + i);
+                    // System.out.println("Value of j: " + j + "Value of i: " + i);
                     if(insertPos == Node.n/2+1) { // if inserted child is at start of this new right node
                         if(insertPos == i) {
                             rightNode.childPointers[j] = childNode; // copy pointer only
+                            rightNode.childPointers[j].setParent(rightNode);
                         } else {
                             rightNode.keys[j-1] = this.keys[i-1];
-                            rightNode.childPointers[j] = this.childPointers[i];                            
+                            rightNode.childPointers[j] = this.childPointers[i]; 
+                            rightNode.childPointers[j].setParent(rightNode);                           
                             this.keys[i-1] = Float.MAX_VALUE;
                             this.childPointers[i] = null;
                         }
                     } else{ // else if inserted child is somewhere in the middle of the new right node, need copy both pointer and key
+                        // System.out.println("Inserting at middle of node");
                         if(insertPos == i && !inserted) {
                             if(i==Node.n) {
                                 rightNode.childPointers[j] = childNode;
+                                rightNode.childPointers[j].setParent(rightNode);
                             } else {
                                 rightNode.childPointers[j] = childNode;
-                                rightNode.keys[j] = key;
+                                rightNode.childPointers[j].setParent(rightNode);
+                                rightNode.keys[j] = rightNode.keys[j-1];
+                                rightNode.keys[j-1] = key;
                                 i--;
                                 inserted = true;
                             }                            
                         } else {
+                            rightNode.childPointers[j] = this.childPointers[i+1];
+                            rightNode.childPointers[j].setParent(rightNode);                
                             if(i+1 == Node.n) break;
-                            rightNode.childPointers[j] = this.childPointers[i+1];                
                             if(i+1 < Node.n) rightNode.keys[j] = this.keys[i+1];
                             this.keys[i] = Float.MAX_VALUE;
                             this.childPointers[i+1] = null;
@@ -200,7 +127,14 @@ public class InternalNode extends Node {
                 parentNode.getKeys()[0] = rightNode.getSubtreeLB();
             } else {
                 this.getParent().insertChild(rightNode);
+                rightNode.setParent(this.getParent());
             }
+
+            // System.out.println("full node");
+            // this.flagNullPointer();
+            // if(insertPos <= (Node.n)/2) System.out.println("left node problem");
+            // if(insertPos > (Node.n)/2) System.out.println("right node problem");
+            // rightNode.flagNullPointer();
 
         } else {
             float key = childNode.getSubtreeLB();
@@ -224,6 +158,15 @@ public class InternalNode extends Node {
         }
 
         updateKeys();
+    }
+
+    public void flagNullPointer() {
+        for(int i=0; i<Node.n; i++) {
+            if(this.keys[i] != Float.MAX_VALUE && this.childPointers[i+1] == null) {
+                System.out.println("GOT UNEXPECTED NULL POINTER HERE! AT: position " + i + " and key " + this.keys[i]);
+                enumerateNodes();
+            }
+        }
     }
 
     // after inserting new record, the lower bound of the subtrees might change, so need to update the keys
@@ -255,14 +198,16 @@ public class InternalNode extends Node {
         //     if(this.childPointers[i] == null) break;
         //     this.childPointers[i].enumerateNodes();
         // }
-        
-        this.childPointers[0].enumerateNodes();
-
 
         // for(int i=0; i<Node.n; i++) {
         //     if(this.keys[i] == Float.MAX_VALUE) break;
         //     System.out.print(" " + this.keys[i]);
         // }
+        
+        this.childPointers[0].enumerateNodes();
+
+
+
     }
 
     public void deleteRecord(float fg_pct_home, Disk disk) {

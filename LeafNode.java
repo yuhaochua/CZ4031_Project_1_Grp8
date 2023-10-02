@@ -118,7 +118,7 @@ public class LeafNode extends Node {
             System.out.print(" " + this.keys[i]);
         }
         System.out.println();
-        // System.out.println("The parent is: " + this.getParent());
+        System.out.println("The parent is: " + this.getParent());
 
         if(this.getNextLeafNode() != null) {
             this.getNextLeafNode().enumerateNodes();
