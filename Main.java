@@ -74,8 +74,10 @@ public class Main {
             System.out.println("Size of a record: " + Record.RECORD_SIZE);
             System.out.println("Number of records stored in a block: " + Block.MAX_NUM_RECORDS);
             System.out.println("Number of blocks for storing data: " + disk.getNumBlocks());
-            System.out.println("Enumerating bplus tree");
-            bplustree.enumerateNodes();
+            lines();
+            experiment2();
+            lines();
+            experiment5();
 
         } catch (FileNotFoundException | NumberFormatException e) {
             System.err.println("File not found: " + filePath);
@@ -87,8 +89,37 @@ public class Main {
 
     }
 
-    public void experiment2() {
+    public static void lines() {
+        System.out.println("========================================================================");
+    }
 
+    public static void experiment2() {
+        System.out.println("~~~~~EXPERIMENT 2~~~~~");
+        System.out.println("The parameter n of the B+ tree is: " + Node.n);
+        System.out.println("The number of nodes of the B+ tree is: " + bplustree.countNodes());
+        System.out.println("The number of levels of the B+ tree is: " + bplustree.countLevels());
+        System.out.println("The content of the root node (only the keys) is:");
+        bplustree.rootNodeContent();
+    }
+
+    // delete all records below 0.35 inclusively
+    public static void experiment5() {
+        System.out.println("~~~~~EXPERIMENT 5~~~~~");
+
+        long start = System.nanoTime();
+        while(bplustree.deleteRecord((float) 0.35, disk)){
+            // continue;
+            // bplustree.enumerateNodes();
+        }
+        long end = System.nanoTime();
+
+        System.out.println("After deleting movies with attribute 'FG_PCT_home' below 0.35 inclusively...");
+        System.out.println("The parameter n of the B+ tree is: " + Node.n);
+        System.out.println("The number of nodes of the B+ tree is: " + bplustree.countNodes());
+        System.out.println("The number of levels of the B+ tree is: " + bplustree.countLevels());
+        System.out.println("The content of the root node (only the keys) is:");
+        bplustree.rootNodeContent();
+        System.out.println("Running time of the deleting process in nanoseconds is: " + (end - start));
     }
 
 }

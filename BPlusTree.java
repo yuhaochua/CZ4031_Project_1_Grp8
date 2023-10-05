@@ -1,5 +1,5 @@
 public class BPlusTree {
-    private Node rootNode; 
+    private Node rootNode;
 
     public BPlusTree() {
         rootNode = new LeafNode();
@@ -8,13 +8,35 @@ public class BPlusTree {
     // count the number of nodes in this B+ tree
     public int countNodes() {
         // IMPLEMENTATION
-        return 1;
+        return rootNode.countNodes();
     }
 
     // count the number of levels in this B+ tree
     public int countLevels() {
         // IMPLEMENTATION
-        return 1;
+        if(rootNode.getClass().toString().equals("class LeafNode")) return 1;
+        int numOfLevels = 1;
+        InternalNode internalNode = (InternalNode) rootNode;
+        Node childNode;
+        while(true) {
+            childNode = internalNode.getChildPointers()[0];
+            if(childNode.isLeaf()) {
+                numOfLevels++;
+                break;
+            }
+            internalNode = (InternalNode) childNode;
+            numOfLevels++;
+        }
+        return numOfLevels;
+    }
+
+    public void rootNodeContent() {
+        System.out.print("Keys in the root node are:");
+        for(int i=0; i<Node.n; i++) {
+            if(rootNode.getKeys()[i] == Float.MAX_VALUE) break;
+            System.out.print(" " + rootNode.getKeys()[i]);
+        }
+        System.out.println();
     }
 
     // retrieve root node of this B+ tree
@@ -36,8 +58,15 @@ public class BPlusTree {
 
     // delete record from B+ tree
     // need to report running time of this delete process
-    public void deleteRecord() {
+    public boolean deleteRecord(float key, Disk disk) {
         // IMPLEMENTATION
+        boolean deleted = rootNode.deleteRecord(key, disk, null, null);
+        if(rootNode.getNumKeys() == 0) {
+            InternalNode oldRoot = (InternalNode) rootNode;
+            rootNode = oldRoot.getChildPointers()[0];
+            rootNode.setParent(null);
+        }
+        return deleted;
     }
 
     // search for records with "FG_PCT_home" equal to certain value and return the average "FG3_PCT_home" of those records
