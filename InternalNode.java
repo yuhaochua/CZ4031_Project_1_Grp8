@@ -215,8 +215,41 @@ public class InternalNode extends Node {
     }
 
     public float searchQuery(float key) {
-        // IMPLEMENTATION
-        return (float) 0.1;
+        
+        int nodeCount = 0;
+        float result;
+        int i = 0;
+        Node node = this;
+        
+        // Traverse the internal nodes until a leaf node is reached
+        while (node instanceof InternalNode) {
+            InternalNode internalNode = (InternalNode) node;
+
+            i = 0;
+
+            // Increment the number of nodes accessed
+            nodeCount++;
+
+            // Decide which child node to follow based on the target key
+            while (i < Node.n && key >= node.getKeys()[i]) {
+                i++;
+            }
+    
+            // Follow the pointer to the child node
+            node = internalNode.getChildPointers()[i];
+        }
+
+        result = -2; //if searchQuery returned this, did not enter leaf node
+    
+        // When a leaf node is reached, delegate the search to the leaf node and return the result
+        if (node instanceof LeafNode) {
+            nodeCount++;
+            result = node.searchQuery(key);
+        }
+
+        System.out.printf("No. of index nodes accessed: %d\n", nodeCount);
+
+        return result;
     }
 
     public float rangeQuery(float lowerKey, float upperKey) {

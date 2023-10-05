@@ -76,6 +76,10 @@ public class Main {
             System.out.println("Number of blocks for storing data: " + disk.getNumBlocks());
             System.out.println("Enumerating bplus tree");
             bplustree.enumerateNodes();
+            System.out.print("Entering experiment 3\n");
+            experiment3();
+            System.out.print("Experiment 3 ended");
+
 
         } catch (FileNotFoundException | NumberFormatException e) {
             System.err.println("File not found: " + filePath);
@@ -89,6 +93,14 @@ public class Main {
 
     public void experiment2() {
 
+    }
+
+    public static void experiment3() {
+        float key = 0.5f;
+        long start2 = System.currentTimeMillis();
+        System.out.printf("Result of query: %f\n", bplustree.searchQuery(key));
+        long end2 = System.currentTimeMillis();
+        System.out.println("Elapsed Time in milli seconds: "+ (end2-start2));
     }
 
 }
