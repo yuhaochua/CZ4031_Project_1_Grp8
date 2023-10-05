@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+
 public class LeafNode extends Node {
     // Has a total of n+1 pointers
     // private Address[] dataPointers; // 4 bytes * n, pointers to actual records stored in blocks
@@ -278,8 +279,50 @@ public class LeafNode extends Node {
     }
 
     public float searchQuery(float key) {
-        // IMPLEMENTATION
-        return (float) 0.1;
+
+        float resultCount = 0;
+        float resultSum = 0;
+        float result;
+
+        Block block;
+        int index;
+        Record record;
+
+        List<Address> addresses;
+
+
+        // Search for records with the specified key
+        for (int i = 0; i < n; i++) {
+
+            if (keys[i] != Float.MAX_VALUE && keys[i] == key) {
+
+                addresses = dataPointers[i];
+                for (Address address : addresses) {
+                    block = address.getBlock();
+                    index = address.getIndex();
+                    record = block.getRecords()[index];
+                    resultSum += record.getFg3_pct_home();
+                    resultCount++;
+                }
+
+                System.out.printf("No. of data block accesses: %d\n", (int) resultCount);
+
+                break;
+
+            } else if (keys[i] > key) {
+                break; // Since keys are sorted, no more matching keys will be found
+            }
+        }
+
+        //key not found
+        if (resultCount == 0) {
+            return -1;
+        }
+
+        result = resultSum / resultCount;
+
+        return result;
+
     }
 
     public float rangeQuery(float lowerKey, float upperKey) {

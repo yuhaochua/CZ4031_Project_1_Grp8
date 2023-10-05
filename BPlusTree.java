@@ -73,8 +73,7 @@ public class BPlusTree {
     // need to report number of index nodes AND number of data blocks the process access, maybe can use some sort of print statement within this method
     // need to report running time of this search query
     public float searchQuery(float key) {
-        // IMPLEMENTATION
-        return (float) 0.1;
+        return rootNode.searchQuery(key);
     }
 
     // search for records with "FG_PCT_home" within lowerKey and upperKey, both inclusively, and return the average "FG3_PCT_home" of those records

@@ -69,12 +69,17 @@ public class Main {
             
             // Object objectToMeasure = new Record(1,1,(short)1,(float)0.1,(float)0.1,(float)0.1,(byte)2,(byte)2,(byte)1);
             // long size = calculator.getObjectSize(calculator);
+          
             lines();
             experiment1();
             lines();
             experiment2();
             lines();
             experiment5();
+
+            System.out.print("Entering experiment 3\n");
+            experiment3();
+            System.out.print("Experiment 3 ended");
 
         } catch (FileNotFoundException | NumberFormatException e) {
             System.err.println("File not found: " + filePath);
@@ -141,6 +146,14 @@ public class Main {
         end = System.nanoTime();
         System.out.println("Number of blocks accessed by brute-force linear scan method: " + blocksAccessed);
         System.out.println("Running time of brute force scan in nanoseconds is: " + (end - start));
+    }
+
+    public static void experiment3() {
+        float key = 0.5f;
+        long start2 = System.currentTimeMillis();
+        System.out.printf("Result of query: %f\n", bplustree.searchQuery(key));
+        long end2 = System.currentTimeMillis();
+        System.out.println("Elapsed Time in milli seconds: "+ (end2-start2));
     }
 
 }
