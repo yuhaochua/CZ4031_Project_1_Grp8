@@ -4,7 +4,7 @@ import java.util.Arrays;
 // this class contains an array of float, which represents the keys in the node
 // the children classes(LeafNode, InternalNode) will have their own implementations of pointers
 public abstract class Node {
-    public static final int n = 12;
+    public static final int n = 31;
     // public static final int MIN_N = 16;
 
     // protected int numKeys;
@@ -15,6 +15,7 @@ public abstract class Node {
         // numKeys = 0;
         keys = new float[n];
         Arrays.fill(keys, Float.MAX_VALUE); // initiate keys with max value of float
+        parent = null;
     }
 
     public float[] getKeys() {
@@ -37,11 +38,22 @@ public abstract class Node {
         return true;
     }
 
+    public int getNumKeys() {
+        int numKeys = 0;
+        while(numKeys < Node.n && this.keys[numKeys] != Float.MAX_VALUE) {
+            numKeys++;
+        }
+
+        return numKeys;
+    }
+
 
     public abstract void insertRecord(Address address);
-    public abstract void deleteRecord(float key, Disk disk); // delete records with "FG_PCT_home" below 0.35 inclusively
+    public abstract boolean deleteRecord(float key, Disk disk, Node leftSibling, Node rightSibiling); // delete records with "FG_PCT_home" below 0.35 inclusively
     public abstract float searchQuery(float key); // search for records with "FG_PCT_home" equal to certain value and return the average "FG3_PCT_home" of those records
     public abstract float rangeQuery(float lowerKey, float upperKey); // search for records with "FG_PCT_home" within lowerKey and upperKey, both inclusively, and return the average "FG3_PCT_home" of those records
     public abstract float getSubtreeLB(); // find the lower bound value of this node's subtree
     public abstract void enumerateNodes(); // print out the nodes in this node and its subtree
+    public abstract boolean isLeaf(); // return whether node is leaf or not
+    public abstract int countNodes(); // return the number of nodes for this node's subtree
 }
