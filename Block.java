@@ -3,7 +3,7 @@ import java.util.HashMap;
 
 public class Block {
     public static final int MAX_BLOCK_SIZE = 400; // 400 bytes max block size
-    public static final int MAX_RECORD_SIZE = 32; // 24 bytes record size
+    public static final int MAX_RECORD_SIZE = 32; // 32 bytes record size
     public static final int MAX_NUM_RECORDS = MAX_BLOCK_SIZE/MAX_RECORD_SIZE;
 
 

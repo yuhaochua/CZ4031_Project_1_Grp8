@@ -56,4 +56,8 @@ public class Disk {
     public int getNumBlocks() {
         return blockSet.size();
     }
+
+    public Set<Block> getBlockSet() {
+        return blockSet;
+    }
 }

@@ -1,6 +1,7 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
+import java.util.Set;
 
 public class Main {
     private static Disk disk = new Disk();
@@ -68,12 +69,8 @@ public class Main {
             
             // Object objectToMeasure = new Record(1,1,(short)1,(float)0.1,(float)0.1,(float)0.1,(byte)2,(byte)2,(byte)1);
             // long size = calculator.getObjectSize(calculator);
-
-            System.out.println("Number of records: " + numRecords);
-            // System.out.println("Size of a record in java : " + size);
-            System.out.println("Size of a record: " + Record.RECORD_SIZE);
-            System.out.println("Number of records stored in a block: " + Block.MAX_NUM_RECORDS);
-            System.out.println("Number of blocks for storing data: " + disk.getNumBlocks());
+            lines();
+            experiment1();
             lines();
             experiment2();
             lines();
@@ -91,6 +88,15 @@ public class Main {
 
     public static void lines() {
         System.out.println("========================================================================");
+    }
+
+    public static void experiment1() {
+        System.out.println("~~~~~EXPERIMENT 1~~~~~");
+        System.out.println("Number of records: " + numRecords);
+        // System.out.println("Size of a record in java : " + size);
+        System.out.println("Size of a record: " + Record.RECORD_SIZE);
+        System.out.println("Number of records stored in a block: " + Block.MAX_NUM_RECORDS);
+        System.out.println("Number of blocks for storing data: " + disk.getNumBlocks());
     }
 
     public static void experiment2() {
@@ -120,6 +126,21 @@ public class Main {
         System.out.println("The content of the root node (only the keys) is:");
         bplustree.rootNodeContent();
         System.out.println("Running time of the deleting process in nanoseconds is: " + (end - start));
+
+        System.out.println();
+        System.out.println("### BRUTE FORCE SCANNING ###");
+        Set<Block> blocks = disk.getBlockSet();
+        int blocksAccessed = 0;
+        start = System.nanoTime();
+        for(Block block : blocks) {
+            for(Record record : block.getRecords()) {
+                if(record.getFg_pct_home() <= 0.35) break; // once we find a record in the block that fulfils 'FG_PCT_home' below 0.35, can exit the block
+            }
+            blocksAccessed++;
+        }
+        end = System.nanoTime();
+        System.out.println("Number of blocks accessed by brute-force linear scan method: " + blocksAccessed);
+        System.out.println("Running time of brute force scan in nanoseconds is: " + (end - start));
     }
 
 }
