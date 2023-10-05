@@ -3,7 +3,9 @@
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 public class LeafNode extends Node {
@@ -280,7 +282,8 @@ public class LeafNode extends Node {
 
     public float searchQuery(float key) {
 
-        float resultCount = 0;
+        // float resultCount = 0;
+        boolean resultFound = false;
         float resultSum = 0;
         float result;
 
@@ -289,23 +292,26 @@ public class LeafNode extends Node {
         Record record;
 
         List<Address> addresses;
+        Set<Block> scannedBlocks = new HashSet<>();
 
 
         // Search for records with the specified key
         for (int i = 0; i < n; i++) {
 
             if (keys[i] != Float.MAX_VALUE && keys[i] == key) {
-
+                resultFound = true;
                 addresses = dataPointers[i];
                 for (Address address : addresses) {
                     block = address.getBlock();
                     index = address.getIndex();
                     record = block.getRecords()[index];
-                    resultSum += record.getFg3_pct_home();
-                    resultCount++;
+                    if(!scannedBlocks.contains(block)) {
+                        scannedBlocks.add(block);
+                    }
+                    resultSum += record.getFg3_pct_home();                    
                 }
 
-                System.out.printf("No. of data block accesses: %d\n", (int) resultCount);
+                System.out.printf("No. of data block accesses: %d\n", (int) scannedBlocks.size());
 
                 break;
 
@@ -315,11 +321,11 @@ public class LeafNode extends Node {
         }
 
         //key not found
-        if (resultCount == 0) {
+        if (!resultFound) {
             return -1;
         }
 
-        result = resultSum / resultCount;
+        result = resultSum / scannedBlocks.size();
 
         return result;
 

@@ -75,11 +75,9 @@ public class Main {
             lines();
             experiment2();
             lines();
-            experiment5();
-
-            System.out.print("Entering experiment 3\n");
             experiment3();
-            System.out.print("Experiment 3 ended");
+            lines();
+            experiment5();
 
         } catch (FileNotFoundException | NumberFormatException e) {
             System.err.println("File not found: " + filePath);
@@ -97,6 +95,7 @@ public class Main {
 
     public static void experiment1() {
         System.out.println("~~~~~EXPERIMENT 1~~~~~");
+        System.out.println("Storing data on disk...");
         System.out.println("Number of records: " + numRecords);
         // System.out.println("Size of a record in java : " + size);
         System.out.println("Size of a record: " + Record.RECORD_SIZE);
@@ -106,11 +105,36 @@ public class Main {
 
     public static void experiment2() {
         System.out.println("~~~~~EXPERIMENT 2~~~~~");
+        System.out.println("Building B+ tree on attribute 'FG_PCT_home'...");
         System.out.println("The parameter n of the B+ tree is: " + Node.n);
         System.out.println("The number of nodes of the B+ tree is: " + bplustree.countNodes());
         System.out.println("The number of levels of the B+ tree is: " + bplustree.countLevels());
         System.out.println("The content of the root node (only the keys) is:");
         bplustree.rootNodeContent();
+    }
+
+    public static void experiment3() {
+        System.out.println("~~~~~EXPERIMENT 3~~~~~");
+        float key = 0.5f;
+        long start = System.nanoTime();
+        System.out.printf("Result of query: %f\n", bplustree.searchQuery(key));
+        long end = System.nanoTime();
+        System.out.println("Running time of retrieval process in nanoseconds: "+ (end-start));
+
+        System.out.println();
+        System.out.println("### BRUTE FORCE SCANNING ###");
+        Set<Block> blocks = disk.getBlockSet();
+        int blocksAccessed = 0;
+        start = System.nanoTime();
+        for(Block block : blocks) {
+            for(Record record : block.getRecords()) {
+                if(record != null && record.getFg_pct_home() == 0.5f) break; // once we find a record in the block that fulfils 'FG_PCT_home' below 0.35, can exit the block
+            }
+            blocksAccessed++;
+        }
+        end = System.nanoTime();
+        System.out.println("Number of blocks accessed by brute-force linear scan method: " + blocksAccessed);
+        System.out.println("Running time of brute force scan in nanoseconds is: " + (end - start));
     }
 
     // delete all records below 0.35 inclusively
@@ -136,24 +160,18 @@ public class Main {
         System.out.println("### BRUTE FORCE SCANNING ###");
         Set<Block> blocks = disk.getBlockSet();
         int blocksAccessed = 0;
+        int numRecords = 0;
         start = System.nanoTime();
         for(Block block : blocks) {
             for(Record record : block.getRecords()) {
-                if(record.getFg_pct_home() <= 0.35) break; // once we find a record in the block that fulfils 'FG_PCT_home' below 0.35, can exit the block
+                if(record != null && record.getFg_pct_home() <= 0.35) numRecords++; // once we find a record in the block that fulfils 'FG_PCT_home' below 0.35, can exit the block
             }
             blocksAccessed++;
         }
         end = System.nanoTime();
+        System.out.println("Num records found: " + numRecords);
         System.out.println("Number of blocks accessed by brute-force linear scan method: " + blocksAccessed);
         System.out.println("Running time of brute force scan in nanoseconds is: " + (end - start));
-    }
-
-    public static void experiment3() {
-        float key = 0.5f;
-        long start2 = System.currentTimeMillis();
-        System.out.printf("Result of query: %f\n", bplustree.searchQuery(key));
-        long end2 = System.currentTimeMillis();
-        System.out.println("Elapsed Time in milli seconds: "+ (end2-start2));
     }
 
 }
