@@ -126,14 +126,16 @@ public class Main {
         System.out.println("### BRUTE FORCE SCANNING ###");
         Set<Block> blocks = disk.getBlockSet();
         int blocksAccessed = 0;
+        int numRecords = 0;
         start = System.nanoTime();
         for(Block block : blocks) {
             for(Record record : block.getRecords()) {
-                if(record != null && record.getFg_pct_home() == 0.5f) break; // once we find a record in the block that fulfils 'FG_PCT_home' below 0.35, can exit the block
+                if(record != null && record.getFg_pct_home() == 0.5f) numRecords++; // numRecords++ to simulate reading the record
             }
             blocksAccessed++;
         }
         end = System.nanoTime();
+        System.out.println("Num records found: " + numRecords);
         System.out.println("Number of blocks accessed by brute-force linear scan method: " + blocksAccessed);
         System.out.println("Running time of brute force scan in nanoseconds is: " + (end - start));
     }
@@ -165,12 +167,12 @@ public class Main {
         start = System.nanoTime();
         for(Block block : blocks) {
             for(Record record : block.getRecords()) {
-                if(record != null && record.getFg_pct_home() <= 0.35) numRecords++; // once we find a record in the block that fulfils 'FG_PCT_home' below 0.35, can exit the block
+                if(record != null && record.getFg_pct_home() <= 0.35) numRecords++; // numRecords++ to simulate deletion operation
             }
             blocksAccessed++;
         }
         end = System.nanoTime();
-        System.out.println("Num records found: " + numRecords);
+        System.out.println("Num records deleted: " + numRecords);
         System.out.println("Number of blocks accessed by brute-force linear scan method: " + blocksAccessed);
         System.out.println("Running time of brute force scan in nanoseconds is: " + (end - start));
     }

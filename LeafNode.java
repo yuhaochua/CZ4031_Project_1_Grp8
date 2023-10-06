@@ -305,9 +305,7 @@ public class LeafNode extends Node {
                     block = address.getBlock();
                     index = address.getIndex();
                     record = block.getRecords()[index];
-                    if(!scannedBlocks.contains(block)) {
-                        scannedBlocks.add(block);
-                    }
+                    scannedBlocks.add(block);
                     resultSum += record.getFg3_pct_home();                    
                 }
 
