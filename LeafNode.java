@@ -312,7 +312,6 @@ public class LeafNode extends Node {
                 System.out.printf("No. of data block accesses: %d\n", (int) scannedBlocks.size());
 
                 break;
-
             } else if (keys[i] > key) {
                 break; // Since keys are sorted, no more matching keys will be found
             }
@@ -330,10 +329,55 @@ public class LeafNode extends Node {
     }
 
     public float rangeQuery(float lowerKey, float upperKey) {
-        // IMPLEMENTATION
 
-        return (float) 0.1;
+                // float resultCount = 0;
+                boolean resultFound = false;
+                float resultSum = 0;
+                float result;
+        
+                Block block;
+                int index;
+                Record record;
+        
+                List<Address> addresses;
+                Set<Block> scannedBlocks = new HashSet<>();
+        
+                System.out.printf("Leafffff")
+                // Search for records with the key >= lowerKey and <= upperKey
+                for (int i = 0; i < n; i++) {
+        
+                    if (keys[i] != Float.MAX_VALUE && keys[i] >= lowerKey && keys[i] <= upperKey ) {
+                        resultFound = true;
+                        addresses = dataPointers[i];
+                        for (Address address : addresses) {
+                            block = address.getBlock();
+                            index = address.getIndex();
+                            record = block.getRecords()[index];
+                            if(!scannedBlocks.contains(block)) {
+                                scannedBlocks.add(block);
+                            }
+                            resultSum += record.getFg_pct_home();                    
+                        }
+        
+                        System.out.printf("No. of data block accesses: %d\n", (int) scannedBlocks.size());
+        
+                        continue;
+                    } else if (keys[i] > upperKey) {
+                        break; // Since keys are sorted, no more matching keys will be found
+                    }
+                }
+        
+                //key not found
+                if (!resultFound) {
+                    return -1;
+                }
+        
+                result = resultSum / scannedBlocks.size();
+        
+                return result;
+
     }
+
 
     // for leaf node, there is no subtree, so the lower bound exists in this node as the first key
     public float getSubtreeLB() {
