@@ -3,14 +3,11 @@ import java.util.Set;
 
 public class Disk {
     private final int DISK_SIZE;
-    private int maxBlocks;
-    // private Map<Block, Boolean> blockMap; // a mapping indicating whether each block still has space or not
     private Set<Block> availBlocks;
     private Set<Block> blockSet;
 
     public Disk() {
         this.DISK_SIZE = 500 * 1024 * 1024; // 500MB = 500 * 2^20
-        this.maxBlocks = 1250000;
         // this.blockMap = new HashMap<>();
         this.blockSet = new HashSet<>();
         this.availBlocks = new HashSet<>();

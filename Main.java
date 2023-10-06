@@ -115,9 +115,10 @@ public class Main {
 
     public static void experiment3() {
         System.out.println("~~~~~EXPERIMENT 3~~~~~");
+        System.out.println("Retrieving records with 'FG_PCT_home equal to 0.5...'");
         float key = 0.5f;
         long start = System.nanoTime();
-        System.out.printf("Result of query: %f\n", bplustree.searchQuery(key));
+        System.out.printf("Average 'FG3_PCT_home' of the retrieved records: %f\n", bplustree.searchQuery(key));
         long end = System.nanoTime();
         System.out.println("Running time of retrieval process in nanoseconds: "+ (end-start));
 
@@ -148,7 +149,7 @@ public class Main {
         }
         long end = System.nanoTime();
 
-        System.out.println("After deleting movies with attribute 'FG_PCT_home' below 0.35 inclusively...");
+        System.out.println("After deleting records with attribute 'FG_PCT_home' below 0.35 inclusively...");
         System.out.println("The parameter n of the B+ tree is: " + Node.n);
         System.out.println("The number of nodes of the B+ tree is: " + bplustree.countNodes());
         System.out.println("The number of levels of the B+ tree is: " + bplustree.countLevels());
