@@ -13,6 +13,7 @@ public class LeafNode extends Node {
     // private Address[] dataPointers; // 4 bytes * n, pointers to actual records stored in blocks
     private List<Address>[] dataPointers; // 4 bytes * n, pointers to ArrayList of references to actual records stored in blocks
     private Node nextLeafNode; // pointer to the neighboring leaf node
+    public static int numRecordsDeleted = 0;
 
     public LeafNode() {
         super();
@@ -179,6 +180,7 @@ public class LeafNode extends Node {
 
         for(Address addr : this.dataPointers[deletePos]) {
             disk.deleteRecord(addr);
+            numRecordsDeleted++;
         }
 
         // case 1: simply delete
