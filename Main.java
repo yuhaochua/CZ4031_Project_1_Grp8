@@ -57,6 +57,7 @@ public class Main {
             experiment4();
             lines();
             experiment5();
+            lines();
 
         } catch (FileNotFoundException | NumberFormatException e) {
             System.err.println("File not found: " + filePath);
