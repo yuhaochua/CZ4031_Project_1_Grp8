@@ -466,12 +466,14 @@ public class InternalNode extends Node {
             // Follow the pointer to the child node
             node = internalNode.getChildPointers()[i];
         }
+        
+        result = -2; //if searchQuery returned this, did not enter leaf node
+
         // When a leaf node is reached, delegate the search to the leaf node and return the result
         if (node instanceof LeafNode) {
             nodeCount++;
             result = node.rangeQuery(lowerKey, upperKey);
         }
-        result = -2; //if searchQuery returned this, did not enter leaf node
 
         System.out.printf("No. of index nodes accessed: %d\n", nodeCount);
 

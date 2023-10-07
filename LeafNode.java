@@ -67,7 +67,11 @@ public class LeafNode extends Node {
                 this.dataPointers[insertPos] = new ArrayList<Address>();
                 this.dataPointers[insertPos].add(address);
             }
-            // System.out.println("Inserted key into non full tree: " + key);
+            
+            if(key != this.keys[insertPos]) {
+                System.out.println("Inserted record into non full tree: " + key);
+                System.out.println("Inserted into position: " + this.keys[insertPos]);
+            }
 
 
         } else { // leaf node is full, need to split
@@ -90,13 +94,22 @@ public class LeafNode extends Node {
                     this.keys[i] = Float.MAX_VALUE;
                     this.dataPointers[i] = new ArrayList<Address>();
                 }
+                if(insertPos < (Node.n+1)/2) {
+                    this.insertRecord(address);
+                } else {
+                    rightChild.insertRecord(address);
+                }
             } else {
                 // distributing the keys from this node to the new rightChild node
                 // NEED TO INSERT THE NEW KEY ALSO AFTER DISTRIBUTING
                 if(insertPos < (Node.n+1)/2) { // will be inserted into left node
                     for(int i=(Node.n+1)/2-1, j=0; i<Node.n; i++, j++) {
                         rightChild.keys[j] = this.keys[i];
-                        rightChild.dataPointers[j] = this.dataPointers[i];                
+                        rightChild.dataPointers[j] = this.dataPointers[i];
+                        if(rightChild.keys[j] != rightChild.dataPointers[j].get(0).getBlock().getRecords()[rightChild.dataPointers[j].get(0).getIndex()].getFg_pct_home()) {
+                            System.out.println("key is : " + rightChild.keys[j]);
+                            System.out.println("first record is : " + rightChild.dataPointers[j].get(0).getBlock().getRecords()[rightChild.dataPointers[j].get(0).getIndex()].getFg_pct_home());
+                        }                
                         this.keys[i] = Float.MAX_VALUE;
                         this.dataPointers[i] = new ArrayList<Address>();
                     }
@@ -104,7 +117,12 @@ public class LeafNode extends Node {
                 } else { // will be inserted into right node
                     for(int i=(Node.n+1)/2, j=0; i<Node.n; i++, j++) {
                         rightChild.keys[j] = this.keys[i];
-                        rightChild.dataPointers[j] = this.dataPointers[i];                
+                        rightChild.dataPointers[j] = this.dataPointers[i];
+                        if(rightChild.keys[j] != rightChild.dataPointers[j].get(0).getBlock().getRecords()[rightChild.dataPointers[j].get(0).getIndex()].getFg_pct_home()) {
+                            System.out.println("mismatch in key and data");
+                            System.out.println("key is : " + rightChild.keys[j]);
+                            System.out.println("first record is : " + rightChild.dataPointers[j].get(0).getBlock().getRecords()[rightChild.dataPointers[j].get(0).getIndex()].getFg_pct_home());
+                        }                
                         this.keys[i] = Float.MAX_VALUE;
                         this.dataPointers[i] = new ArrayList<Address>();
                     }
@@ -136,6 +154,9 @@ public class LeafNode extends Node {
         for(int i=0; i<Node.n; i++) {
             if(this.keys[i] == Float.MAX_VALUE) break;
             System.out.print(" " + this.keys[i]);
+            if(this.keys[i] != this.dataPointers[i].get(0).getBlock().getRecords()[this.dataPointers[i].get(0).getIndex()].getFg_pct_home()) {
+
+            }
         }
         System.out.println();
         System.out.println("The parent is: " + this.getParent());
@@ -294,7 +315,7 @@ public class LeafNode extends Node {
         List<Address> addresses;
         Set<Block> scannedBlocks = new HashSet<>();
 
-
+        int numRecords = 0;
         // Search for records with the specified key
         for (int i = 0; i < n; i++) {
 
@@ -306,10 +327,12 @@ public class LeafNode extends Node {
                     index = address.getIndex();
                     record = block.getRecords()[index];
                     scannedBlocks.add(block);
-                    resultSum += record.getFg3_pct_home();                    
+                    resultSum += record.getFg3_pct_home();  
+                    numRecords++;                
                 }
 
                 System.out.printf("No. of data block accesses: %d\n", (int) scannedBlocks.size());
+                System.out.printf("No. of records found: %d\n", (int) numRecords);
 
                 break;
             } else if (keys[i] > key) {
@@ -322,7 +345,7 @@ public class LeafNode extends Node {
             return -1;
         }
 
-        result = resultSum / scannedBlocks.size();
+        result = resultSum / numRecords;
 
         return result;
 
@@ -342,37 +365,45 @@ public class LeafNode extends Node {
                 List<Address> addresses;
                 Set<Block> scannedBlocks = new HashSet<>();
         
-                System.out.printf("Leafffff")
+                boolean exceeded = false; // check if exceeded upperKey already
+                LeafNode current = this;
+                int numRecords = 0;
+
                 // Search for records with the key >= lowerKey and <= upperKey
-                for (int i = 0; i < n; i++) {
-        
-                    if (keys[i] != Float.MAX_VALUE && keys[i] >= lowerKey && keys[i] <= upperKey ) {
-                        resultFound = true;
-                        addresses = dataPointers[i];
-                        for (Address address : addresses) {
-                            block = address.getBlock();
-                            index = address.getIndex();
-                            record = block.getRecords()[index];
-                            if(!scannedBlocks.contains(block)) {
+                while(!exceeded){
+                    for (int i = 0; i < n; i++) {            
+                        if (current.getKeys()[i] != Float.MAX_VALUE && current.getKeys()[i] >= lowerKey && current.getKeys()[i] <= upperKey ) {
+                            resultFound = true;
+                            addresses = current.getDataPointers()[i];
+                            for (Address address : addresses) {
+                                block = address.getBlock();
+                                index = address.getIndex();
+                                record = block.getRecords()[index];
                                 scannedBlocks.add(block);
-                            }
-                            resultSum += record.getFg_pct_home();                    
+                                resultSum += record.getFg3_pct_home();
+                                numRecords++;                    
+                            }            
+                            continue;
+                        } else if (current.getKeys()[i] != Float.MAX_VALUE && current.getKeys()[i] > upperKey) {
+                            System.out.println("current key is " + current.getKeys()[i]);
+                            System.out.println("Upper limit exceeded!");
+                            exceeded = true;
+                            break; // Since keys are sorted, no more matching keys will be found
                         }
-        
-                        System.out.printf("No. of data block accesses: %d\n", (int) scannedBlocks.size());
-        
-                        continue;
-                    } else if (keys[i] > upperKey) {
-                        break; // Since keys are sorted, no more matching keys will be found
                     }
+                    current = (LeafNode) current.getNextLeafNode();
+                    if(current == null) break;
                 }
+
+                System.out.printf("No. of data block accesses: %d\n", (int) scannedBlocks.size());
+                System.out.printf("No. of records found: %d\n", (int) numRecords);
         
                 //key not found
                 if (!resultFound) {
                     return -1;
                 }
         
-                result = resultSum / scannedBlocks.size();
+                result = resultSum / numRecords;
         
                 return result;
 
