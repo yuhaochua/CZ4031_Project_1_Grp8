@@ -81,6 +81,7 @@ public class BPlusTree {
     // need to report running time of this range query
     public float rangeQuery(float lowerKey, float upperKey) {
         // IMPLEMENTATION
-        return (float) 0.1;
+        return rootNode.rangeQuery(lowerKey, upperKey);
+        
     }
 }

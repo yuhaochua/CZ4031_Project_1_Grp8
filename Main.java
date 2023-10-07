@@ -54,6 +54,8 @@ public class Main {
             lines();
             experiment3();
             lines();
+            experiment4();
+            lines();
             experiment5();
 
         } catch (FileNotFoundException | NumberFormatException e) {
@@ -116,6 +118,46 @@ public class Main {
         System.out.println("Running time of brute force scan in nanoseconds is: " + (end - start));
     }
 
+    public static void experiment4(){
+
+    //the number of index nodes the process accesses;
+    // • the number of data blocks the process accesses;
+    // • the average of “FG3_PCT_home” of the records that are returned;
+    // • the running time of the retrieval process;
+    // • the number of data blocks that would be accessed by a brute-force
+    // linear scan method (i.e., it scans the data blocks one by one) and its
+    // running time (for comparison)
+        System.out.println("~~~~~EXPERIMENT 4~~~~~");
+        System.out.println("Retrieving records with 'FG_PCT_home' between 0.6 and 1 inclusively...");
+        float lowerKey = 0.6f;
+        float upperKey = 1f;
+
+        long start = System.nanoTime();
+        System.out.printf("Average 'FG3_PCT_home' of the retrieved records: %f\n", bplustree.rangeQuery(lowerKey, upperKey));
+        long end = System.nanoTime();
+        System.out.println("Running time of retrieval process in nanoseconds: "+ (end-start));
+
+        System.out.println();
+        System.out.println("### BRUTE FORCE SCANNING ###");
+        Set<Block> blocks = disk.getBlockSet();
+        int blocksAccessed = 0;
+        int numRecords = 0;
+
+        start = System.nanoTime();
+        for(Block block : blocks) {
+            for(Record record : block.getRecords()) {
+                if(record != null && record.getFg_pct_home() >= lowerKey && record.getFg_pct_home() <= upperKey) numRecords++; // numRecords++ to simulate reading the record
+            }
+            blocksAccessed++;
+        }
+        end = System.nanoTime();
+
+        System.out.println("Num records found: " + numRecords);
+        System.out.println("Number of blocks accessed by brute-force linear scan method: "+ blocksAccessed);
+        System.out.println("Running time of retrieval process in nanoseconds: "+ (end-start));
+
+    }
+
     // delete all records below 0.35 inclusively
     public static void experiment5() {
         System.out.println("~~~~~EXPERIMENT 5~~~~~");
@@ -140,6 +182,7 @@ public class Main {
         Set<Block> blocks = disk.getBlockSet();
         int blocksAccessed = 0;
         int numRecords = 0;
+        
         start = System.nanoTime();
         for(Block block : blocks) {
             for(Record record : block.getRecords()) {
@@ -148,6 +191,7 @@ public class Main {
             blocksAccessed++;
         }
         end = System.nanoTime();
+
         System.out.println("Num records deleted: " + numRecords);
         System.out.println("Number of blocks accessed by brute-force linear scan method: " + blocksAccessed);
         System.out.println("Running time of brute force scan in nanoseconds is: " + (end - start));
