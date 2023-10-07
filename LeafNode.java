@@ -54,7 +54,6 @@ public class LeafNode extends Node {
                 this.dataPointers[insertPos].add(address);
             } else {
                 // Shift keys and pointers right if there is a need to.
-                // For future improvement, maybe can stop shifting right once we hit the FLOAT MAX VALUE
                 if(this.keys[insertPos] != Float.MAX_VALUE) {
                     for (int i = Node.n - 1; i > insertPos; i--) {
                         this.keys[i] = this.keys[i - 1];
@@ -112,8 +111,6 @@ public class LeafNode extends Node {
                 }
             }
 
-            
-
             if(this.getParent() == null) {
                 InternalNode parentNode = new InternalNode();
                 this.setParent(parentNode);
@@ -125,9 +122,6 @@ public class LeafNode extends Node {
                 this.getParent().insertChild(rightChild);
                 rightChild.setParent(this.getParent());
             }
-
-            // System.out.println("Inserted key into full tree: " + key);
-            // System.out.println("This right child parent is: " + rightChild.getParent());
         }
     }
 

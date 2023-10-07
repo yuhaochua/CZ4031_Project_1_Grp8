@@ -1,5 +1,4 @@
-public class Record {
-    public static final int RECORD_SIZE = 32; // 25 bytes for attributes + 7 bytes padding because java memory alignment in 8 bytes
+public class Record { // 25 bytes for attributes + 7 bytes padding because java memory alignment in 8 bytes
     private int game_date_est; // 4 bytes
     private int team_id_home; // 4 bytes
     private short pts_home; // 2 bytes
