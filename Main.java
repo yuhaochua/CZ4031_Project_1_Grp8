@@ -125,14 +125,6 @@ public class Main {
     }
 
     public static void experiment4(){
-
-    //the number of index nodes the process accesses;
-    // • the number of data blocks the process accesses;
-    // • the average of “FG3_PCT_home” of the records that are returned;
-    // • the running time of the retrieval process;
-    // • the number of data blocks that would be accessed by a brute-force
-    // linear scan method (i.e., it scans the data blocks one by one) and its
-    // running time (for comparison)
         System.out.println("~~~~~EXPERIMENT 4~~~~~");
         System.out.println("Retrieving records with 'FG_PCT_home' between 0.6 and 1 inclusively...");
         float lowerKey = 0.6f;
