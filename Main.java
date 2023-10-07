@@ -178,7 +178,6 @@ public class Main {
         System.out.println("The number of levels of the B+ tree is: " + bplustree.countLevels());
         System.out.println("The content of the root node (only the keys) is:");
         bplustree.rootNodeContent();
-        System.out.println("Number of records deleted: " + LeafNode.numRecordsDeleted);
         System.out.println("Running time of the deleting process in nanoseconds: " + (end - start));
 
         System.out.println();

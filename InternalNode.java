@@ -495,6 +495,7 @@ public class InternalNode extends Node {
             numNodes += this.childPointers[childPos].countNodes();
             childPos++;
         }
+        if(this.parent == null) numNodes++;
 
         return numNodes;
     }
